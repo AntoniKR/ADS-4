@@ -6,102 +6,80 @@
 template<typename T>
 class TPQueue {
   // Сюда помещается описание структуры "Очередь с приоритетами"
-  private:
-     T *arr;
-     int size;
-     int begin, end;
-     int count;
  public:
-     explicit TPQueue(int = 100);
-     ~TPQueue();
-     void push(const T &);
-     T pop();
-     T get() const;
-     bool isEmpty() const;
-     bool isFull() const;
+    TPQueue();
+    ~TPQueue();
+    void push(const T&);
+    T pop();
+    T get() const;
+    bool isFull() const;
+    bool isEmpty() const;
+private:
+    T* arr;
+    int size;
+    int begin, end;
+    int count;
 };
 
 template<typename T>
-TPQueue<T>::TPQueue(int sizeQueue) :
-    size(sizeQueue),
+TPQueue<T>::TPQueue() :
+    size(100),
     begin(0), end(0), count(0) {
-      arr = new T[size + 1];
-    }
+    arr = new T[size + 1];
+}
 template<typename T>
 TPQueue<T>::~TPQueue() {
-  delete [] arr;
+    delete[] arr;
 }
-template <typename T>
-void TPQueue<T>::push(const T & item) {
-  assert(count < size);
-  int prior = 0;
-  int beginC = begin;
-  int inPlace = 0;
-  bool flag = 0;
-  T trans, trans2;
-  if (beginC != end) {
-    while (beginC != end) {
-        if (!(arr[beginC].prior < item.prior)) {
-          beginC++;
-          if (beginC == size)
-            beginC = 0;
-        } else {
-          trans = arr[beginC];
-          arr[beginC] = item;
-          inPlace = beginC + 1;
-          end++;
-          count++;
-          flag = 1;
-          break;
+
+template<typename T>
+void TPQueue<T>::push(const T& item) {
+    assert(count < size);
+    if (count != 0) {
+        for (int i = end - 1; i >= begin; i--) {
+            if (arr[i].prior >= item.prior) {
+                arr[i + 1] = item;
+                break;
+            
+            if (arr[i].prior < item.prior) {
+                arr[i + 1] = arr[i];
+            }
+            if (begin == i) {
+                arr[i] = item;
+            }
         }
     }
-    beginC = inPlace;
-    if (flag) {
-        while (beginC != end) {
-          trans2 = arr[beginC];
-          arr[beginC] = trans;
-          trans = trans2;
-          beginC++;
-            if (beginC == size)
-              beginC = 0;
-        }
+    else {
+        arr[begin] = item;
     }
-    if (!flag) {
-      arr[end++] = item;
-      inPlace = end;
-      count++;
-    }
-  } else {
-    arr[begin] = item;
-    count++;
     end++;
-  }
-  if (end > size)
-    end -= size + 1;
+    count++;
+    if (end > size) {
+        end -= size + 1;
+    }
 }
 template<typename T>
 T TPQueue<T>::pop() {
-  assert(count > 0);
-  T item = arr[begin++];
-  count--;
-  if (begin > size)
-    begin -= size + 1;
-  return item;
+    assert(count > 0);
+    T item = arr[begin++];
+    count--;
+    if (begin > size)
+        begin -= size + 1;
+    return item;
 }
 template<typename T>
 T TPQueue<T>::get() const {
-  assert(count > 0);
-  return arr[begin];
-}
-template<typename T>
-bool TPQueue<T>::isEmpty() const {
-  return count == 0;
+    assert(count > 0);
+    return arr[begin];
 }
 template<typename T>
 bool TPQueue<T>::isFull() const {
-  return count == size;
+    return count == size;
 }
-};
+template<typename T>
+bool TPQueue<T>::isEmpty() const {
+    return count == 0;
+}
 
 struct SYM {
   char ch;
