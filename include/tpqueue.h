@@ -19,7 +19,6 @@ class TPQueue {
     T get() const;
     bool isFull() const;
     bool isEmpty() const;
-
 };
 
 template<typename T>
